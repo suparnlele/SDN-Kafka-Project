@@ -1,6 +1,16 @@
 # SDN Project Kafka Deployment
 
-## Repository Setup Instructions
+## Project Overview
+* Deploy Kafka
+* Application is exposing data using ReST services - for that any standard API available on open network can be used. weather data API is used in this project.
+* Producer: Calls the REST api to read the data (in JSON format) and puts it on the kafka bus using Java api's.
+* Consumers: Three consumers are there to consume the data and do specific tasks
+  * Consumer1 : Prints data locally .
+  * Consumer2 : Send data to REST application using Java api's.
+  * Consumer3 : Stores the data in Elasticsearch DB.
+
+## Getting Started
+
 
 ### Clone this repository
 ```bash
