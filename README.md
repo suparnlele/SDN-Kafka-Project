@@ -244,7 +244,8 @@ $ java -jar Kafka-Producer-App.jar
 ```
 Open the log of producer
 
-##### When producer started scheduled task of getting data from the weather and push it to the kafka broker, then all the consumers listning to this broker will recieve data and started doing their specific tasks.**
+When producer started scheduled task of getting data from the weather and push it to the kafka broker, then all the consumers listning to this broker will recieve data and started doing their specific tasks.
+
 
 ***Step 5 - To check that consumer3 has successfully inserted data to elasticsearch, go to consumer3 log and find the below log message***
 ```
@@ -257,4 +258,7 @@ http://localhost:9200/weather/databus/<id>
 ***Step 7 - Open the above url in the browser***
 
 You can see that the data is succesully inserted !!!
+
+## Thanks
+**Prof. Samar Shailendra**, for allowing us to do this project.
 
