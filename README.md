@@ -63,7 +63,7 @@ Set the partitions options as the number of brokers you want your data to be spl
 
 You will get output like this if the above command executes successfully.
 ```
-Created topic "Weather".
+Created topic "weather".
 ```
 
 See all the created topic on Kafka by running the list topic command
@@ -72,20 +72,23 @@ $ bin/kafka-topics.sh --list --zookeeper localhost:2181
 ```
 ### Optional step
 
-##### If you want to check weather the data is getting uploaded to the kafka or not ?
+If you want to check weather the data is getting uploaded to the kafka or not?
+
 ***Step 1 - Send Messages to Kafka*** 
+
 The **producer** is the process responsible for put data into our Kafka. The Kafka comes with a command line client that will take input from a file or from standard input and send it out as messages to the Kafka cluster. The default Kafka send each line as a separate message.
 
-Let’s run the producer and then type a few messages into the console to send to the server. 
+Let’s run the producer and then type a few messages into the console to send to the server.
+
 ```bash
-$ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic testTopic
+$ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic weather
 ```
 You can exit this command or keep this terminal running for further testing. Now open a new terminal to the Kafka consumer process on next step.
 
 ***Step 2 – Using Kafka Consumer***
 Kafka also has a command line consumer to read data from Kafka cluster and display messages to standard output.
 ```bash
-$ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic testTopic --from-beginning
+$ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic weather --from-beginning
 ```
 
 ***Step 7 - After installing kafka come out from this directory or open new terminal with this same repository folder***
@@ -95,15 +98,17 @@ $ cd ..
 ```
 
 
-### Install Elastic search on ubuntu
+### Install Elasticsearch 
 
-***1.Dependencies***
+***Step 1 - Dependencies***
+
 First, update the list of available packages by running  the given below command 
 ```bash
 $ apt-get update.
 ```
 
-***1.1 Test your installed java version***
+***Step 1.1 - Test your installed java version***
+
 You can then check that Java is installed by running the command 
 ```bash
 $ java -version.
@@ -111,18 +116,19 @@ $ java -version.
 
 That’s all the dependencies we need for now, so let’s get started with obtaining and installing Elasticsearch.
 
-***2.Download and Install***
+***Step 2 - Download and Install***
+
 Elasticsearch can be downloaded directly from their site in zip, tar.gz, deb, or rpm packages. 
 
 
-### Download the archive
+***Step 2.2 - Download the archive***
 ```bash
 $ wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.7.zip
 ```
 ```bash
 $ unzip elasticsearch-0.90.7.zip
 ```
-***3. Edit elasticsearch.yml file***
+***Step 3 - Edit elasticsearch.yml file***
 Go to the config folder in elasticsearch-0.90.7 . Edit the file elasticsearch.yml
 
 ```bash
@@ -143,7 +149,8 @@ Save and exit. Now restart Elasticsearch to put the changes into effect:
 $ sudo service elasticsearch restart
 ```
 
-## 4. Test your Elasticsearch install
+***Step 4 - Test your Elasticsearch install***
+
 You have now extracted the zip to a directory and have the Elasticsearch binaries available, and can start the server.Make sure you’re in the resulting directory. 
 
 Let’s ensure that everything is working. Move out of the config directory and run
@@ -176,11 +183,76 @@ If you see a response similar to the one above, Elasticsearch is working properl
 
 The server can be stopped using the RESTful API
 ```bash
-$curl -X POST 'http://localhost:9200/_cluster/nodes/_local/_shutdown'
+$ curl -X POST 'http://localhost:9200/_cluster/nodes/_local/_shutdown'
 ```
 You can restart the server with the corresponding service elasticsearch start.
 
 
-### Conclusion
-We have now installed, configured and begun using Elasticsearch. Since it responds to a basic RESTful API. It is now easy to begin adding to and querying data using Elasticsearch from your application.
+
+## Consumer application
+
+***Step 1 - Go inside the Spring-Boot-Kafka-Consumer directory and build the application using maven and before building you need to change log file path to wherever you want
+
+```bash
+$ cd Spring-Boot-Kafka-Consumer
+$ vim src/main/resources/logback-spring.xml
+```
+***Step 2 - Change logfile path***
+
+```bash
+<file>your_log_file.log</file>
+<fileNamePattern>your_log_file.%d{yyyy-MM-dd}.log</fileNamePattern>
+```
+***Step 3 - Build application***
+```bash
+$ mvm clean install
+```
+On succession of build, Kafka-Consumer-App.jar file gets generated inside the "target" folder and that **.jar** file is the final build for consumer application
+
+***Step 4 - Run application***
+```bash
+$ java -jar Kafka-Consumer-App.jar
+```
+Opens the log of consumer
+
+## Producer application
+
+***Step 1 - Go inside the Spring-Boot-Kafka-Producer directory and build the application using maven and before building you need to change log file path to wherever you want
+
+```bash
+$ cd Spring-Boot-Kafka-Producer
+$ vim src/main/resources/logback-spring.xml
+```
+***Step 2 - Change logfile path***
+```
+<file>your_log_file.log</file>
+<fileNamePattern>your_log_file.%d{yyyy-MM-dd}.log</fileNamePattern>
+```
+
+***Step 3 - Build application***
+```bash
+$ mvm clean install
+```
+On succession of build, Kafka-Producer-App.jar file gets generated inside the "target" folder and that **.jar** file is the final build for consumer application
+
+
+***Step 4 - Run application***
+```bash
+$ java -jar Kafka-Producer-App.jar
+```
+Open the log of producer
+
+**When producer started scheduled task of getting data from the weather and push it to the kafka broker, then all the consumers listning to this broker will recieve data and started doing their specific tasks.**
+
+***Step 5 - To check that consumer3 has successfully inserted data to elasticsearch, go to consumer3 log and find the below log message***
+```
+Consumed JSON Message :{ elasticsearch URL :: http://localhost:9200/weather/databus/{id}/_create } | { id : 38 } Data Sent To Elasticsearch.
+```
+***Step 6 - Copy the above "id" and replace it with in below url***
+```bash
+http://localhost:9200/weather/databus/<id>
+```
+***Step 7 - Open the above url in the browser
+
+You can see that the data is succesully inserted !!!
 
