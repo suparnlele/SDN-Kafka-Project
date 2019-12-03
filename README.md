@@ -19,7 +19,7 @@ $ cd SDN-Kafka-Project
 
 ### Install Apache kafka on ubuntu
 
-***Step 1:Pre-requisite***
+***Step 1 - Pre-requisite***
 
 Apache Kafka required Java to run. You must have java installed on your system. If java is not installed, execute below command to install default OpenJDK on your system.
 
@@ -70,9 +70,15 @@ See all the created topic on Kafka by running the list topic command
 ```bash
 $ bin/kafka-topics.sh --list --zookeeper localhost:2181
 ```
-### Optional step
+***Step 5 - After installing kafka come out from this directory or open new terminal with this same repository folder***
 
-If you want to check weather the data is getting uploaded to the kafka or not?
+```bash
+$ cd ..
+```
+
+### Optional step 
+
+If you want to check weather the data is getting uploaded to the kafka or not? Do the below two steps after **Step 4** 
 
 ***Step 1 - Send Messages to Kafka*** 
 
@@ -91,11 +97,6 @@ Kafka also has a command line consumer to read data from Kafka cluster and displ
 $ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic weather --from-beginning
 ```
 
-***Step 7 - After installing kafka come out from this directory or open new terminal with this same repository folder***
-
-```bash
-$ cd ..
-```
 
 
 ### Install Elasticsearch 
@@ -128,7 +129,8 @@ $ wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsea
 ```bash
 $ unzip elasticsearch-0.90.7.zip
 ```
-***Step 3 - Edit elasticsearch.yml file***
+***Step 3 - Edit "elasticsearch.yml" file***
+
 Go to the config folder in elasticsearch-0.90.7 . Edit the file elasticsearch.yml
 
 ```bash
@@ -191,7 +193,7 @@ You can restart the server with the corresponding service elasticsearch start.
 
 ## Consumer application
 
-***Step 1 - Go inside the Spring-Boot-Kafka-Consumer directory and build the application using maven and before building you need to change log file path to wherever you want
+***Step 1 - Go inside the Spring-Boot-Kafka-Consumer directory and build the application using maven and before building you need to change log file path to wherever you want***
 
 ```bash
 $ cd Spring-Boot-Kafka-Consumer
@@ -217,7 +219,7 @@ Opens the log of consumer
 
 ## Producer application
 
-***Step 1 - Go inside the Spring-Boot-Kafka-Producer directory and build the application using maven and before building you need to change log file path to wherever you want
+***Step 1 - Go inside the Spring-Boot-Kafka-Producer directory and build the application using maven and before building you need to change log file path to wherever you want***
 
 ```bash
 $ cd Spring-Boot-Kafka-Producer
@@ -242,7 +244,7 @@ $ java -jar Kafka-Producer-App.jar
 ```
 Open the log of producer
 
-**When producer started scheduled task of getting data from the weather and push it to the kafka broker, then all the consumers listning to this broker will recieve data and started doing their specific tasks.**
+##### When producer started scheduled task of getting data from the weather and push it to the kafka broker, then all the consumers listning to this broker will recieve data and started doing their specific tasks.**
 
 ***Step 5 - To check that consumer3 has successfully inserted data to elasticsearch, go to consumer3 log and find the below log message***
 ```
@@ -252,7 +254,7 @@ Consumed JSON Message :{ elasticsearch URL :: http://localhost:9200/weather/data
 ```bash
 http://localhost:9200/weather/databus/<id>
 ```
-***Step 7 - Open the above url in the browser
+***Step 7 - Open the above url in the browser***
 
 You can see that the data is succesully inserted !!!
 
