@@ -111,93 +111,130 @@ $ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic weathe
 
 ### Install Elasticsearch 
 
-***Step 1 - Dependencies***
+***Step 1 - Open Command Terminal***
 
-First, update the list of available packages by running  the given below command 
-```bash
-$ apt-get update.
-```
+Go to your **Linux and open command terminal.** If you are using Ubuntu then simple use keyboard shortcut **Ctrl+Alt+T** to get Terminal
 
-***Step 1.1 - Test your installed java version***
+***Step 2 - Install Java for ElasticSearch***
 
 You can then check that Java is installed by running the command 
 ```bash
-$ java -version.
+$ sudo apt-get install default-jdk
+$ echo $JAVA_HOME /usr/lib/jvm/java-8-oracle
 ```
-
-That’s all the dependencies we need for now, so let’s get started with obtaining and installing Elasticsearch.
-
-***Step 2 - Download and Install***
-
-Elasticsearch can be downloaded directly from their site in zip, tar.gz, deb, or rpm packages. 
-
-
-***Step 2.2 - Download the archive***
+##### Check the current installed Java version:
 ```bash
-$ wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.7.zip
+$ java -version
 ```
+
+***Step 3 - Install apt-transport-https***
+
+To access Debian repository over secure HTTPs channel, the APT transport will help us in that by allowing repositories access via the HTTP Secure protocol (HTTPS) which also referred to as HTTP over TLS. The command to add it is:
 ```bash
-$ unzip elasticsearch-0.90.7.zip
+$ sudo apt-get install apt-transport-https
 ```
-***Step 3 - Edit "elasticsearch.yml" file***
 
-Go to the config folder in elasticsearch-0.90.7 . Edit the file elasticsearch.yml
+***Step 4 - Download and install the Public Signing Key for Elasticsearch packages***
 
+Use the below command to download and install the Public Signing Key that will help us to add the official repository to of ElasticSearch on Ubuntu.
 ```bash
-$ sudo vi /etc/elasticsearch/elasticsearch.yml
+$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 ```
 
-Then find the line that specifies network.bind_host, then uncomment it and change the value to localhost so it looks like the following:
+***Step 5 -  Add Repository for ElasticSearch***
 
 ```bash
-network.bind_host: localhost
-```
-Then insert the following line somewhere in the file, to disable dynamic scripts:
-```bash
-script.disable_dynamic: true
-```
-Save and exit. Now restart Elasticsearch to put the changes into effect:
-```bash
-$ sudo service elasticsearch restart
+$ add-apt-repository "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
 ```
 
-***Step 4 - Test your Elasticsearch install***
+***Step 6 - Download and Install ElasticSearch on Ubuntu Linux***
 
-You have now extracted the zip to a directory and have the Elasticsearch binaries available, and can start the server.Make sure you’re in the resulting directory. 
+After adding the repo for ElasticSearch first update the system, so that it can recognize the added repo by flushing caches.
 
-Let’s ensure that everything is working. Move out of the config directory and run
+Here is the update command:
+
 ```bash
-$ ./bin/elasticsearch
- ```
-Elasticsearch should now be running on port 9200. Do note that Elasticsearch takes some time to fully start, so running the curl command below immediately might fail. It shouldn’t take longer than ten seconds to start responding, so if the below command fails, something else is likely wrong.
+$ sudo apt-get update
+```
+Now, type the ElasticSearch installation command:
 
-Ensure the server is started by running
 ```bash
-$ curl -X GET 'http://localhost:9200'
+$ sudo apt-get install elasticsearch
 ```
-You should see the following response
+***Step 7 - Configure Elasticsearch to start automatically***
+
+After installing, if you don’t want to start the Elasticsearch service manually then simply add its services to systemctl, so that it could start every time automatically with system boots up.
+
+```bash
+$ sudo /bin/systemctl enable elasticsearch.service
 ```
+##### Enable Elasticsearch service
+
+```bash
+$ sudo systemctl enable elasticsearch.service
+```
+##### Start the Elastic service using below command:
+
+```bash
+$ sudo systemctl start elasticsearch.service
+```
+##### In future to stop the same service you can use this:
+
+```bash
+$ sudo systemctl stop elasticsearch.service
+```
+
+***Step 8 - Verify Elasticsearch is running or not***
+
+Now everything is up and running by now on your system for ElasticSearch, its time to check whether it is working fine or not. So, to test it we use CURL.
+
+##### IF you don’t have curl installed on your system you can use this command to get it:
+
+```bash
+$ sudo apt-get install curl
+```
+##### Now test the Elasticsearch by sending an HTTP request with port number 9200
+
+```bash
+$ curl -X GET "localhost:9200/"
+```
+##### Output:
+```bash
 {
-  "ok" : true,
-  "status" : 200,
-  "name" : "Xavin",
+  "name" : "good-boy",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "7UGPD6IhROyTXwr0lBhRbQ",
   "version" : {
-    "number" : "0.90.7",
-    "build_hash" : "36897d07dadcb70886db7f149e645ed3d44eb5f2",
-    "build_timestamp" : "2013-11-13T12:06:54Z",
+    "number" : "7.5.0",
+    "build_flavor" : "default",
+    "build_type" : "deb",
+    "build_hash" : "e9ccaed468e2fac2275a3761849cbee64b39519f",
+    "build_date" : "2019-11-26T01:06:52.518245Z",
     "build_snapshot" : false,
-    "lucene_version" : "4.5.1"
+    "lucene_version" : "8.3.0",
+    "minimum_wire_compatibility_version" : "6.8.0",
+    "minimum_index_compatibility_version" : "6.0.0-beta1"
   },
   "tagline" : "You Know, for Search"
 }
 ```
-If you see a response similar to the one above, Elasticsearch is working properly. Alternatively, you can query your install of Elasticsearch from a browser by visiting [Link](http://localhost:9200/). You should see the same JSON as you saw when using curl above.
 
-The server can be stopped using the RESTful API
+You can also check whether it working or not using the browser. Open the browser and enter the localhost:9200 address.
+
+***Step 9 - Configure Elasticsearch via YML file***
+
+To access the ElasticSearch from any public IP, we have to do some changes in ElasticSearch configuration file. Open it using below command:
+
 ```bash
-$ curl -X POST 'http://localhost:9200/_cluster/nodes/_local/_shutdown'
+$ sudo nano /etc/elasticsearch/elasticsearch.yml
 ```
-You can restart the server with the corresponding service elasticsearch start.
+And comment the line **network.host**  and set IP address to **localhost** and save it using **Ctrl+X** and then type **Y** and press **Enter** button.
+
+##### After changing restart the ElasticSearch service:
+
+```bash
+$ sudo systemctl restart elasticsearch.service
+```
 
 
 
